@@ -29,7 +29,7 @@ layout_principal.addWidget(titulo)
 # Datos para el Algoritmo 1
 
 # Titulo el algoritmo
-subtitulo1 = QLabel("Algoritmo 1")
+subtitulo1 = QLabel("Algoritmo")
 subtitulo1.setFont(QFont("Arial", 15))
 subtitulo1.setAlignment(Qt.AlignCenter)
 layout_principal.addWidget(subtitulo1)
@@ -64,57 +64,11 @@ grid_algoritmo1.addWidget(valor_incremento1, 1, 3)
 grid_algoritmo1.addWidget(QLabel("Máximo de elementos:"), 0, 4)
 entry_maximo1 = QSlider(Qt.Horizontal)
 entry_maximo1.setMinimum(0)
-entry_maximo1.setMaximum(100)
+entry_maximo1.setMaximum(1000)
 grid_algoritmo1.addWidget(entry_maximo1, 0, 5)
 valor_maximo1 = QLabel("0")
 entry_maximo1.valueChanged.connect(lambda v: valor_maximo1.setText(str(v)))
 grid_algoritmo1.addWidget(valor_maximo1, 1, 5)
-
-#-----------------------------------------------------------------------------------------------#
-
-# Datos para el Algoritmo 2
-
-# Titulo el algoritmo
-subtitulo2 = QLabel("Algoritmo 2")
-subtitulo2.setFont(QFont("Arial", 15))
-subtitulo2.setAlignment(Qt.AlignCenter)
-layout_principal.addWidget(subtitulo2)
-
-#Contenedor que sirve para que se pueda usar grid, con el objetivo de que en esa linea esten los 3 inputs del usuario
-contenedor_algoritmo2 = QFrame()
-layout_principal.addWidget(contenedor_algoritmo2)
-grid_algoritmo2 = QGridLayout()
-contenedor_algoritmo2.setLayout(grid_algoritmo2)
-
-#Input que se encarga de recibir la cantidad de elementos con el que iniciara el algoritmo
-grid_algoritmo2.addWidget(QLabel("Cantidad inicial de elementos:"), 0, 0)
-entry_inicio2 = QSlider(Qt.Horizontal)
-entry_inicio2.setMinimum(0)
-entry_inicio2.setMaximum(100)
-grid_algoritmo2.addWidget(entry_inicio2, 0, 1)
-valor_inicio2 = QLabel("0")
-entry_inicio2.valueChanged.connect(lambda v: valor_inicio2.setText(str(v)))
-grid_algoritmo2.addWidget(valor_inicio2, 1, 1)
-
-#Input que se encarga de recibir la cantidad de elementos que se agregaran a la lista del algoritmo por ciclo
-grid_algoritmo2.addWidget(QLabel("Incremento por ciclo:"), 0, 2)
-entry_incremento2 = QSlider(Qt.Horizontal)
-entry_incremento2.setMinimum(0)
-entry_incremento2.setMaximum(100)
-grid_algoritmo2.addWidget(entry_incremento2, 0, 3)
-valor_incremento2 = QLabel("0")
-entry_incremento2.valueChanged.connect(lambda v: valor_incremento2.setText(str(v)))
-grid_algoritmo2.addWidget(valor_incremento2, 1, 3)
-
-#Input que se encarga de recibir la cantidad de elementos maximos que puede tener la lista del algoritmo
-grid_algoritmo2.addWidget(QLabel("Máximo de elementos:"), 0, 4)
-entry_maximo2 = QSlider(Qt.Horizontal)
-entry_maximo2.setMinimum(0)
-entry_maximo2.setMaximum(100)
-grid_algoritmo2.addWidget(entry_maximo2, 0, 5)
-valor_maximo2 = QLabel("0")
-entry_maximo2.valueChanged.connect(lambda v: valor_maximo2.setText(str(v)))
-grid_algoritmo2.addWidget(valor_maximo2, 1, 5)
 
 #-----------------------------------------------------------------------------------------------#
 
@@ -131,9 +85,9 @@ def generar_click():
     )
 
     aleatorios2 = backend.generar_aleatorios(
-        entry_inicio2.value(),
-        entry_incremento2.value(),
-        entry_maximo2.value()
+        entry_inicio1.value(),
+        entry_incremento1.value(),
+        entry_maximo1.value()
     )
 
     print(aleatorios1)
