@@ -1,4 +1,5 @@
 import tkinter as tk
+import matplotlib.pyplot as plt
 import backend
 
 ventana = tk.Tk()
@@ -20,59 +21,88 @@ titulo.pack(fill="x")
 
 #-----------------------------------------------------------------------------------------------#
 
-#Estos Widgets tienen la finalidad de recibir cuantos algoritmos
-#el usuario va a introducir, de esta forma se hara un programa
-#que pueda analizar cualquier cantidad de algoritmos.
-#Mejorando la experiencia del usuario.
+# Datos para el Algoritmo 1
 
-mensaje_elementos = tk.Label(
-    ventana,
-    text="¿Cuantos elementos quieres analizar?",
-    font=("Arial", 15)
-)
-mensaje_elementos.pack()
+subtitulo1 = tk.Label(ventana, text="Algoritmo 1", font=("Arial", 15))
+subtitulo1.pack()
 
-elementos = tk.IntVar(value=0)
+contenedor_algoritmo1 = tk.Frame(ventana)
+contenedor_algoritmo1.pack()
 
-entrada = tk.Entry(ventana, textvariable=elementos)
-entrada.pack()
+tk.Label(contenedor_algoritmo1, text="Cantidad inicial de elementos:").grid(row=0, column=0)
+entry_inicio1 = tk.Entry(contenedor_algoritmo1)
+entry_inicio1.grid(row=0, column=1)
 
-frame_campos = tk.Frame(ventana)
+tk.Label(contenedor_algoritmo1, text="Incremento por ciclo:").grid(row=0, column=2)
+entry_incremento1 = tk.Entry(contenedor_algoritmo1)
+entry_incremento1.grid(row=0, column=3)
 
-entry_inicio = []
-entry_incremento = []  
-entry_maximo = []  
-
-def generar_campos():
-    for i in range(elementos.get()):
-        tk.Label(frame_campos, text="Cantidad inicial de elementos:").grid(row=i, column=0) 
-
-        entry_inicio.append(tk.Entry(frame_campos))  
-        entry_inicio[i].grid(row=i, column=1)  
-
-        tk.Label(frame_campos, text="Incremento por ciclo:").grid(row=i, column=2)  
-
-        entry_incremento.append(tk.Entry(frame_campos))  
-        entry_incremento[i].grid(row=i, column=3)  
-
-        tk.Label(frame_campos, text="Máximo de elementos:").grid(row=i, column=4)  
-
-        entry_maximo.append(tk.Entry(frame_campos)) 
-        entry_maximo[i].grid(row=i, column=5) 
-
-boton_elementos = tk.Button(ventana, text="Confirmar", command=generar_campos)
-boton_elementos.pack()
-
-frame_campos.pack()
+tk.Label(contenedor_algoritmo1, text="Máximo de elementos:").grid(row=0, column=4)
+entry_maximo1 = tk.Entry(contenedor_algoritmo1)
+entry_maximo1.grid(row=0, column=5)
 
 #-----------------------------------------------------------------------------------------------#
 
-def analizar_click():
-    resultados = backend.analizar(entry_inicio, entry_incremento, entry_maximo, elementos.get())  
-    print(resultados)  
+# Datos para el Algoritmo 2
 
-boton_analizar = tk.Button(ventana, text="Analizar", command=analizar_click)  
-boton_analizar.pack()  
+subtitulo2 = tk.Label(ventana, text="Algoritmo 2", font=("Arial", 15))
+subtitulo2.pack()
+
+contenedor_algoritmo2 = tk.Frame(ventana)
+contenedor_algoritmo2.pack()
+
+tk.Label(contenedor_algoritmo2, text="Cantidad inicial de elementos:").grid(row=0, column=0)
+entry_inicio2 = tk.Entry(contenedor_algoritmo2)
+entry_inicio2.grid(row=0, column=1)
+
+tk.Label(contenedor_algoritmo2, text="Incremento por ciclo:").grid(row=0, column=2)
+entry_incremento2 = tk.Entry(contenedor_algoritmo2)
+entry_incremento2.grid(row=0, column=3)
+
+tk.Label(contenedor_algoritmo2, text="Máximo de elementos:").grid(row=0, column=4)
+entry_maximo2 = tk.Entry(contenedor_algoritmo2)
+entry_maximo2.grid(row=0, column=5)
+
+#-----------------------------------------------------------------------------------------------#
+
+aleatorios1 = {}
+aleatorios2 = {}
+
+def generar_click():
+    global aleatorios1, aleatorios2
+
+    aleatorios1 = backend.generar_aleatorios(
+        int(entry_inicio1.get()),
+        int(entry_incremento1.get()),
+        int(entry_maximo1.get())
+    )
+
+    aleatorios2 = backend.generar_aleatorios(
+        int(entry_inicio2.get()),
+        int(entry_incremento2.get()),
+        int(entry_maximo2.get())
+    )
+
+    print(aleatorios1)
+    print(aleatorios2)
+
+boton_generar = tk.Button(ventana, text="Generar", command=generar_click)
+boton_generar.pack()
+
+def analizar_click():
+    tamaños1, tiempos1 = backend.ejecutar_analisis(aleatorios1)
+    tamaños2, tiempos2 = backend.ejecutar_analisis(aleatorios2)
+
+    plt.plot(tamaños1, tiempos1, marker="o", label="Algoritmo 1")
+    plt.plot(tamaños2, tiempos2, marker="o", label="Algoritmo 2")
+    plt.xlabel("Tamaño")
+    plt.ylabel("Tiempo (s)")
+    plt.title("Comparación de algoritmos")
+    plt.legend()
+    plt.show()
+
+boton_analizar = tk.Button(ventana, text="Analizar", command=analizar_click)
+boton_analizar.pack()
 
 #-----------------------------------------------------------------------------------------------#
 
