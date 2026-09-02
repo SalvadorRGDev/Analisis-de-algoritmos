@@ -90,8 +90,8 @@ boton_generar = tk.Button(ventana, text="Generar", command=generar_click)
 boton_generar.pack()
 
 def analizar_click():
-    tamaños1, tiempos1 = backend.ejecutar_analisis(aleatorios1)
-    tamaños2, tiempos2 = backend.ejecutar_analisis(aleatorios2)
+    tamaños1, tiempos1 = backend.ejecutar_analisis1(aleatorios1)
+    tamaños2, tiempos2 = backend.ejecutar_analisis2(aleatorios2)
 
     plt.plot(tamaños1, tiempos1, marker="o", label="Algoritmo 1")
     plt.plot(tamaños2, tiempos2, marker="o", label="Algoritmo 2")
