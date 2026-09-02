@@ -37,10 +37,9 @@ elementos = tk.IntVar(value=0)
 entrada = tk.Entry(ventana, textvariable=elementos)
 entrada.pack()
 
-frame_campos = tk.Frame(ventana)  
-frame_campos.pack() 
+frame_campos = tk.Frame(ventana)
 
-entry_inicio = []  
+entry_inicio = []
 entry_incremento = []  
 entry_maximo = []  
 
@@ -63,6 +62,8 @@ def generar_campos():
 
 boton_elementos = tk.Button(ventana, text="Confirmar", command=generar_campos)
 boton_elementos.pack()
+
+frame_campos.pack()
 
 #-----------------------------------------------------------------------------------------------#
 
