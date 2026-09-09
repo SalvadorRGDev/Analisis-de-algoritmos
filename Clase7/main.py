@@ -1,5 +1,4 @@
-from analisis import generador_aleatorios, ordenamientos_aleatorios
-from grafica import grafica
+from benchmark import generador_aleatorios, ordenamientos_aleatorios, grafica
 
 min = 20
 max = 100
