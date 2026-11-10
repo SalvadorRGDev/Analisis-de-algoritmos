@@ -13,7 +13,7 @@ BUSCAR LIBRO / SUBIR TXT → ANALIZAR → CONSTRUIR HUFFMAN → COMPRIMIR → IN
 
 ## Integrante
 
-Actividad individual: Salvador ([@SalvadorRGDev](https://github.com/SalvadorRGDev)).
+Actividad individual: Salvador Ramos García ([@SalvadorRGDev](https://github.com/SalvadorRGDev)).
 
 Reporte técnico: [docs/reporte_actividad5.pdf](docs/reporte_actividad5.pdf).
 
