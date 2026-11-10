@@ -1,4 +1,4 @@
-"""Interfaz gráfica: compresor Huffman .hada + árbol de expansión mínima.
+"""Interfaz gráfica: compresor Huffman .sypher + árbol de expansión mínima.
 
 Flujo: BUSCAR LIBRO / SUBIR TXT -> ANALIZAR -> CONSTRUIR HUFFMAN -> COMPRIMIR
        -> INSPECCIONAR -> DESCOMPRIMIR
@@ -572,7 +572,7 @@ class VistaArbol(ttk.Frame):
 class App:
     def __init__(self, root):
         self.root = root
-        self.root.title("HADA · Compresor Huffman y árbol de expansión mínima")
+        self.root.title("Sypher · Compresor Huffman y árbol de expansión mínima")
         self.root.geometry("1360x880")
         self.root.minsize(1100, 720)
         self.root.configure(bg=C["base"])
@@ -582,8 +582,8 @@ class App:
         self.nombre = None         # nombre del .txt cargado
         self.analisis = None       # formato.Analisis
         self.resultado = None      # formato.Resultado
-        self.inspeccion = None     # formato.ArchivoHada abierto en el inspector
-        self.nombre_hada = None
+        self.inspeccion = None     # formato.ArchivoSypher abierto en el inspector
+        self.nombre_sypher = None
         self.recuperado = None     # formato.Descompresion
         self.libros = []
         self.hechos = set()
@@ -609,8 +609,8 @@ class App:
         encabezado.pack(fill="x")
         izquierda = ttk.Frame(encabezado)
         izquierda.pack(side="left")
-        ttk.Label(izquierda, text="HADA · Compresor Huffman", style="Titulo.TLabel").pack(anchor="w")
-        ttk.Label(izquierda, text="Técnica voraz: frecuencias → árbol → códigos → bits → archivo .hada",
+        ttk.Label(izquierda, text="Sypher · Compresor Huffman", style="Titulo.TLabel").pack(anchor="w")
+        ttk.Label(izquierda, text="Técnica voraz: frecuencias → árbol → códigos → bits → archivo .sypher",
                   style="Sub.TLabel").pack(anchor="w")
 
         self.chips = []
@@ -908,17 +908,17 @@ class App:
         self.cuaderno.add(pestana, text="4 · Compresión")
         fila = ttk.Frame(pestana)
         fila.pack(fill="x", pady=(0, 10))
-        self.boton_comprimir = ttk.Button(fila, text="🗜  Comprimir a .hada", style="Acento.TButton",
+        self.boton_comprimir = ttk.Button(fila, text="🗜  Comprimir a .sypher", style="Acento.TButton",
                                           command=self._comprimir, state="disabled")
         self.boton_comprimir.pack(side="left")
-        self.boton_guardar = ttk.Button(fila, text="💾  Guardar .hada…", command=self._guardar_hada, state="disabled")
+        self.boton_guardar = ttk.Button(fila, text="💾  Guardar .sypher…", command=self._guardar_sypher, state="disabled")
         self.boton_guardar.pack(side="left", padx=8)
         self.boton_a_inspector = ttk.Button(fila, text="Abrir en el inspector  →", command=self._resultado_a_inspector,
                                             state="disabled")
         self.boton_a_inspector.pack(side="left")
 
         self.metricas_compresion = Metricas(pestana, [
-            "Original", "Comprimido (.hada)", "Ahorro", "Reducción",
+            "Original", "Comprimido (.sypher)", "Ahorro", "Reducción",
             "Razón de compresión", "Símbolos distintos", "Bits codificados", "Cabecera + tabla",
         ])
         self.metricas_compresion.pack(fill="x")
@@ -948,37 +948,37 @@ class App:
 
     def _mostrar_compresion(self, resultado):
         self.resultado = resultado
-        hada = resultado.hada
+        sypher = resultado.sypher
         original, comprimido = len(resultado.original), len(resultado.archivo)
         ahorro = original - comprimido
         reduccion = ahorro / original * 100 if original else 0
         m = self.metricas_compresion
         m.poner("Original", tamano_corto(original), f"{original:,} bytes")
-        m.poner("Comprimido (.hada)", tamano_corto(comprimido), f"{comprimido:,} bytes")
+        m.poner("Comprimido (.sypher)", tamano_corto(comprimido), f"{comprimido:,} bytes")
         m.poner("Ahorro", tamano_corto(abs(ahorro)) if ahorro >= 0 else "−" + tamano_corto(-ahorro),
                 f"{ahorro:,} bytes")
         m.poner("Reducción", f"{reduccion:.2f} %", "positivo = el archivo se hizo más chico",
                 "Bien.TLabel" if reduccion > 0 else "Mal.TLabel")
         m.poner("Razón de compresión", f"{original / comprimido:.3f} : 1" if comprimido else "—", "original / comprimido")
-        m.poner("Símbolos distintos", f"{len(hada.frecuencias)}", f"{len(resultado.analisis.pasos)} uniones voraces")
-        m.poner("Bits codificados", f"{hada.bits_validos:,}", f"+ {hada.relleno} bits de relleno")
-        m.poner("Cabecera + tabla", f"{hada.tamano_cabecera:,} B", f"{len(hada.datos):,} B de datos")
+        m.poner("Símbolos distintos", f"{len(sypher.frecuencias)}", f"{len(resultado.analisis.pasos)} uniones voraces")
+        m.poner("Bits codificados", f"{sypher.bits_validos:,}", f"+ {sypher.relleno} bits de relleno")
+        m.poner("Cabecera + tabla", f"{sypher.tamano_cabecera:,} B", f"{len(sypher.datos):,} B de datos")
 
         figura = self.figura_compresion
         figura.clear()
         ax = figura.add_subplot(111)
         estilizar_ejes(ax)
-        fijo_bits = max(1, (len(hada.frecuencias) - 1).bit_length())
-        fijo = hada.caracteres * fijo_bits / 8
-        tabla_bytes = len(hada.frecuencias) * 8 + 4
-        cabecera = hada.tamano_cabecera - tabla_bytes
+        fijo_bits = max(1, (len(sypher.frecuencias) - 1).bit_length())
+        fijo = sypher.caracteres * fijo_bits / 8
+        tabla_bytes = len(sypher.frecuencias) * 8 + 4
+        cabecera = sypher.tamano_cabecera - tabla_bytes
         # y = 0 abajo: Huffman, código fijo y original de abajo hacia arriba.
         ax.barh(2, original, color=C["sup2"], label="texto original")
         ax.barh(1, fijo, color=C["malva"], label="código fijo (teórico)")
         ax.barh(0, cabecera, color=C["durazno"], label="cabecera")
         ax.barh(0, tabla_bytes, left=cabecera, color=C["amarillo"], label="tabla de frecuencias")
-        ax.barh(0, len(hada.datos), left=cabecera + tabla_bytes, color=C["verde"], label="datos Huffman")
-        ax.set_yticks([0, 1, 2], ["Huffman (.hada)", f"Código fijo ({fijo_bits} bits)", "Original"])
+        ax.barh(0, len(sypher.datos), left=cabecera + tabla_bytes, color=C["verde"], label="datos Huffman")
+        ax.set_yticks([0, 1, 2], ["Huffman (.sypher)", f"Código fijo ({fijo_bits} bits)", "Original"])
         for y, valor in enumerate([comprimido, fijo, original]):
             ax.text(valor, y, f"  {tamano_corto(int(valor))}", va="center", color=C["texto"], fontsize=9)
         ax.set_xlim(0, original * 1.2 if original else 1)
@@ -994,13 +994,13 @@ class App:
         a = resultado.analisis
         poner_texto(self.texto_detalle, "\n".join([
             f"Archivo:            {self.nombre} → {Path(self.nombre).stem}{formato.EXTENSION}",
-            f"Codificación:       {hada.codificacion}",
-            f"Caracteres:         {hada.caracteres:,}",
-            f"Bits por carácter:  {original * 8 / max(hada.caracteres, 1):.3f} → "
+            f"Codificación:       {sypher.codificacion}",
+            f"Caracteres:         {sypher.caracteres:,}",
+            f"Bits por carácter:  {original * 8 / max(sypher.caracteres, 1):.3f} → "
             f"{huffman.longitud_media(a.frecuencias, a.codigos):.3f}",
             f"Entropía:           {huffman.entropia(a.frecuencias):.3f} bits/símbolo",
-            f"Bits de datos:      {hada.bits_validos:,} (+{hada.relleno} de relleno)",
-            f"SHA-256 original:   {hada.sha256.hex()[:32]}…",
+            f"Bits de datos:      {sypher.bits_validos:,} (+{sypher.relleno} de relleno)",
+            f"SHA-256 original:   {sypher.sha256.hex()[:32]}…",
             "",
             "Tiempos",
             f"  frecuencias:      {t['frecuencias'] * 1000:9.2f} ms   O(n)",
@@ -1013,33 +1013,33 @@ class App:
         self.estado.configure(text=f"Comprimido: {tamano_corto(original)} → {tamano_corto(comprimido)} "
                                    f"({reduccion:.2f} % de reducción).")
 
-    def _guardar_hada(self):
+    def _guardar_sypher(self):
         if not self.resultado:
             return
         ruta = filedialog.asksaveasfilename(
             title="Guardar archivo comprimido", defaultextension=formato.EXTENSION,
             initialfile=Path(self.nombre).stem + formato.EXTENSION,
-            filetypes=[("Archivo HADA", "*" + formato.EXTENSION)])
+            filetypes=[("Archivo Sypher", "*" + formato.EXTENSION)])
         if ruta:
             Path(ruta).write_bytes(self.resultado.archivo)
-            self.nombre_hada = Path(ruta).name
+            self.nombre_sypher = Path(ruta).name
             self.estado.configure(text=f"Guardado: {ruta} ({len(self.resultado.archivo):,} bytes)")
 
     def _resultado_a_inspector(self):
         if self.resultado:
-            nombre = self.nombre_hada or Path(self.nombre).stem + formato.EXTENSION
-            self._mostrar_inspeccion(self.resultado.archivo, nombre, self.resultado.hada)
+            nombre = self.nombre_sypher or Path(self.nombre).stem + formato.EXTENSION
+            self._mostrar_inspeccion(self.resultado.archivo, nombre, self.resultado.sypher)
             self.cuaderno.select(4)
 
     # ------------------------------------------------------- 5 · inspector
     def _crear_pestana_inspector(self):
         pestana = ttk.Frame(self.cuaderno, padding=14)
-        self.cuaderno.add(pestana, text="5 · Inspector .hada")
+        self.cuaderno.add(pestana, text="5 · Inspector .sypher")
         fila = ttk.Frame(pestana)
         fila.pack(fill="x", pady=(0, 10))
-        ttk.Button(fila, text="📂  Abrir archivo .hada…", style="Acento.TButton",
-                   command=self._abrir_hada).pack(side="left")
-        self.info_inspector = ttk.Label(fila, text="  Solo se necesita el .hada: el .txt original no hace falta.",
+        ttk.Button(fila, text="📂  Abrir archivo .sypher…", style="Acento.TButton",
+                   command=self._abrir_sypher).pack(side="left")
+        self.info_inspector = ttk.Label(fila, text="  Solo se necesita el .sypher: el .txt original no hace falta.",
                                         style="Sub.TLabel")
         self.info_inspector.pack(side="left", padx=8)
 
@@ -1104,61 +1104,61 @@ class App:
         marco.pack(fill="both", expand=True)
         self.texto_recuperado.configure(state="disabled")
 
-    def _abrir_hada(self):
+    def _abrir_sypher(self):
         ruta = filedialog.askopenfilename(title="Abrir archivo comprimido",
-                                          filetypes=[("Archivo HADA", "*" + formato.EXTENSION), ("Todos", "*.*")])
+                                          filetypes=[("Archivo Sypher", "*" + formato.EXTENSION), ("Todos", "*.*")])
         if not ruta:
             return
         contenido = Path(ruta).read_bytes()
         self._en_segundo_plano("Leyendo cabecera y reconstruyendo el árbol…", lambda: formato.leer(contenido),
-                               lambda hada: self._mostrar_inspeccion(contenido, Path(ruta).name, hada))
+                               lambda sypher: self._mostrar_inspeccion(contenido, Path(ruta).name, sypher))
 
-    def _mostrar_inspeccion(self, archivo, nombre, hada):
-        self.inspeccion, self.nombre_hada, self.archivo_inspeccion = hada, nombre, archivo
+    def _mostrar_inspeccion(self, archivo, nombre, sypher):
+        self.inspeccion, self.nombre_sypher, self.archivo_inspeccion = sypher, nombre, archivo
         self.recuperado = None
-        original, comprimido = hada.tamano_original, hada.tamano_archivo
+        original, comprimido = sypher.tamano_original, sypher.tamano_archivo
         ahorro = original - comprimido
         m = self.metricas_inspector
         m.poner("Archivo", Path(nombre).stem[:18], f"extensión {Path(nombre).suffix or '(ninguna)'}")
-        m.poner("Formato", f"HADA v{hada.version}", f"texto {hada.codificacion}")
+        m.poner("Formato", f"Sypher v{sypher.version}", f"texto {sypher.codificacion}")
         m.poner("Tamaño original", tamano_corto(original), f"{original:,} bytes")
         m.poner("Tamaño comprimido", tamano_corto(comprimido), f"{comprimido:,} bytes")
         m.poner("Ahorro", tamano_corto(abs(ahorro)) if ahorro >= 0 else "−" + tamano_corto(-ahorro), f"{ahorro:,} bytes")
         m.poner("Compresión", f"{ahorro / original * 100:.2f} %" if original else "—",
                 f"razón {original / comprimido:.3f} : 1" if comprimido else "")
-        m.poner("Símbolos", f"{len(hada.frecuencias)}", f"{hada.caracteres:,} caracteres")
-        m.poner("Bits codificados", f"{hada.bits_validos:,}", f"+ {hada.relleno} de relleno")
-        self.info_inspector.configure(text=f"  {nombre}  ·  original: {hada.nombre_original}")
+        m.poner("Símbolos", f"{len(sypher.frecuencias)}", f"{sypher.caracteres:,} caracteres")
+        m.poner("Bits codificados", f"{sypher.bits_validos:,}", f"+ {sypher.relleno} de relleno")
+        self.info_inspector.configure(text=f"  {nombre}  ·  original: {sypher.nombre_original}")
 
         llenar_tabla(self.tabla_secciones, [(s.nombre, f"{s.inicio:,}", f"{s.tamano:,}", s.valor)
-                                            for s in hada.secciones])
-        orden = sorted(hada.frecuencias, key=lambda s: (-hada.frecuencias[s], ord(s)))
+                                            for s in sypher.secciones])
+        orden = sorted(sypher.frecuencias, key=lambda s: (-sypher.frecuencias[s], ord(s)))
         llenar_tabla(self.tabla_inspector, [
-            (huffman.mostrar_simbolo(s), f"U+{ord(s):04X}", f"{hada.frecuencias[s]:,}", hada.codigos[s],
-             len(hada.codigos[s])) for s in orden
+            (huffman.mostrar_simbolo(s), f"U+{ord(s):04X}", f"{sypher.frecuencias[s]:,}", sypher.codigos[s],
+             len(sypher.codigos[s])) for s in orden
         ])
-        self.arbol_inspector.mostrar(hada.raiz, hada.pasos)
-        self._llenar_binario(archivo, hada)
+        self.arbol_inspector.mostrar(sypher.raiz, sypher.pasos)
+        self._llenar_binario(archivo, sypher)
 
         poner_texto(self.texto_recuperado, "Presiona «DESCOMPRIMIR» para reconstruir el texto a partir del árbol y los bits.")
         self.metricas_integridad.limpiar()
-        self.hashes.configure(text=f"SHA-256 guardado en la cabecera: {hada.sha256.hex()}")
+        self.hashes.configure(text=f"SHA-256 guardado en la cabecera: {sypher.sha256.hex()}")
         self.boton_descomprimir.configure(state="normal")
         self.boton_guardar_txt.configure(state="disabled")
         self.hechos.discard(5)
         self._marcar(4)
         self.sub.select(0)
-        self.estado.configure(text=f"Inspeccionando {nombre}: {len(hada.secciones)} secciones, "
-                                   f"{len(hada.frecuencias)} símbolos.")
+        self.estado.configure(text=f"Inspeccionando {nombre}: {len(sypher.secciones)} secciones, "
+                                   f"{len(sypher.frecuencias)} símbolos.")
 
-    def _llenar_binario(self, archivo, hada):
+    def _llenar_binario(self, archivo, sypher):
         t = self.texto_binario
         t.configure(state="normal")
         t.delete("1.0", "end")
 
-        inicio_nombre = next(s.inicio for s in hada.secciones if s.nombre == "Nombre original")
-        inicio_tabla = next(s.inicio for s in hada.secciones if s.nombre == "Número de símbolos")
-        inicio_datos = hada.tamano_cabecera
+        inicio_nombre = next(s.inicio for s in sypher.secciones if s.nombre == "Nombre original")
+        inicio_tabla = next(s.inicio for s in sypher.secciones if s.nombre == "Número de símbolos")
+        inicio_datos = sypher.tamano_cabecera
 
         def seccion(pos):
             if pos < inicio_nombre:
@@ -1197,8 +1197,8 @@ class App:
 
         t.insert("end", "Primeros bits de los datos, separados por código Huffman\n", "titulo")
         t.insert("end", "Cada grupo de bits es un recorrido de la raíz a una hoja; debajo, el símbolo al que llega.\n\n", "tenue")
-        bits = huffman.bytes_a_bits(hada.datos[:40], min(hada.bits_validos, 320))
-        grupos, nodo, actual = [], hada.raiz, ""
+        bits = huffman.bytes_a_bits(sypher.datos[:40], min(sypher.bits_validos, 320))
+        grupos, nodo, actual = [], sypher.raiz, ""
         for bit in bits:
             if nodo is None:
                 break
@@ -1206,7 +1206,7 @@ class App:
             actual += bit
             if nodo is not None and nodo.es_hoja:
                 grupos.append((actual, huffman.mostrar_simbolo(nodo.simbolo)))
-                nodo, actual = hada.raiz, ""
+                nodo, actual = sypher.raiz, ""
         linea_bits, linea_simbolos, ancho = [], [], 0
         for i, (codigo, simbolo) in enumerate(grupos):
             celda = max(len(codigo), len(simbolo)) + 2
@@ -1219,13 +1219,13 @@ class App:
         self._insertar_grupos(t, linea_bits, linea_simbolos)
 
         t.insert("end", "\nÚltimo byte de los datos y bits de relleno\n", "titulo")
-        if hada.datos:
-            ultimo = f"{hada.datos[-1]:08b}"
-            validos = 8 - hada.relleno
-            t.insert("end", f"byte {len(hada.datos) - 1:,}:  ")
+        if sypher.datos:
+            ultimo = f"{sypher.datos[-1]:08b}"
+            validos = 8 - sypher.relleno
+            t.insert("end", f"byte {len(sypher.datos) - 1:,}:  ")
             t.insert("end", ultimo[:validos], "datos")
             t.insert("end", ultimo[validos:], "relleno")
-            t.insert("end", f"   → {validos} bits válidos y {hada.relleno} de relleno (en rojo) que el descompresor ignora\n", "tenue")
+            t.insert("end", f"   → {validos} bits válidos y {sypher.relleno} de relleno (en rojo) que el descompresor ignora\n", "tenue")
         else:
             t.insert("end", "(sin datos: el texto original estaba vacío)\n", "tenue")
         t.configure(state="disabled")
@@ -1241,19 +1241,19 @@ class App:
     def _descomprimir(self):
         if not self.inspeccion:
             return
-        hada = self.inspeccion
-        self._en_segundo_plano("Recorriendo el árbol bit por bit…", lambda: formato.descomprimir(hada),
+        sypher = self.inspeccion
+        self._en_segundo_plano("Recorriendo el árbol bit por bit…", lambda: formato.descomprimir(sypher),
                                self._mostrar_descompresion)
 
     def _mostrar_descompresion(self, recuperado):
         self.recuperado = recuperado
-        hada = self.inspeccion
+        sypher = self.inspeccion
         m = self.metricas_integridad
         if recuperado.integro:
             m.poner("Integridad (SHA-256)", "✔ Íntegro", "el hash coincide con la cabecera", "Bien.TLabel")
         else:
             m.poner("Integridad (SHA-256)", "✘ No coincide", "el archivo está dañado", "Mal.TLabel")
-        if self.original is not None and self.nombre == hada.nombre_original:
+        if self.original is not None and self.nombre == sypher.nombre_original:
             diferencia = formato.comparar_bytes(self.original, recuperado.contenido)
             if diferencia is None:
                 m.poner("Comparación byte a byte", "✔ Idénticos", f"contra {self.nombre} cargado", "Bien.TLabel")
@@ -1263,7 +1263,7 @@ class App:
             m.poner("Comparación byte a byte", "—", "carga el .txt original en la pestaña 1 para comparar")
         m.poner("Tamaño recuperado", tamano_corto(len(recuperado.contenido)), f"{len(recuperado.contenido):,} bytes")
         m.poner("Tiempo", f"{recuperado.segundos * 1000:.0f} ms", "decodificación O(bits)")
-        self.hashes.configure(text=f"SHA-256 guardado:    {hada.sha256.hex()}\n"
+        self.hashes.configure(text=f"SHA-256 guardado:    {sypher.sha256.hex()}\n"
                                    f"SHA-256 recuperado:  {recuperado.sha256}")
         vista = recuperado.texto[:MAX_VISTA_PREVIA * 5]
         if len(recuperado.texto) > len(vista):

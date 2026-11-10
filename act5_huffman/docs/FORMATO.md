@@ -1,6 +1,6 @@
-# Formato `.hada` (versión 1)
+# Formato `.sypher` (versión 1)
 
-**HADA** = *Huffman · Análisis De Algoritmos*. Es un archivo binario con todo lo
+**Sypher** es el formato propio de la aplicación. Es un archivo binario con todo lo
 necesario para reconstruir el `.txt` original **sin tenerlo a la mano**: la tabla
 de frecuencias (de la que sale otra vez el mismo árbol), los bits comprimidos,
 cuántos de esos bits son válidos y un hash para comprobar la integridad.
@@ -13,7 +13,7 @@ Todos los enteros van en **big-endian** (el byte más significativo primero).
 
 | Offset | Tamaño | Campo | Descripción |
 |---:|---:|---|---|
-| 0 | 4 | `MAGIC` | Firma ASCII `HADA` (`48 41 44 41`). Si no está, el archivo se rechaza. |
+| 0 | 4 | `MAGIC` | Firma ASCII `SYPH` (`53 59 50 48`). Si no está, el archivo se rechaza. |
 | 4 | 1 | `VERSION` | Versión del formato. Hoy es `1`. |
 | 5 | 1 | `CODIF` | Cómo se interpretan los bytes del `.txt`: `0` = UTF-8, `1` = Latin-1. |
 | 6 | 2 | `RESERVADO` | `0`. Espacio para banderas de versiones futuras. |
@@ -69,11 +69,11 @@ código (error) o el hash no coincide.
 Frecuencias `a:5 b:2 r:2 c:1 d:1` → códigos `a=0 c=100 d=101 b=110 r=111`.
 
 ```
-00000000: 4841 4441 0100 0000 0000 0000 0000 000b  HADA............
+00000000: 5359 5048 0100 0000 0000 0000 0000 000b  SYPH............
 00000010: 0000 0000 0000 000b 0000 0000 0000 0017  ................
 00000020: 0104 5bab dcd2 1189 60e8 c8b8 e0ec f65b  ..[.....`......[
 00000030: 7346 86e1 b18f 5871 0c96 4677 9f49 e942  sF....Xq..Fw.I.B
-00000040: ae00 0000 006a f2a0 7300 0f61 6272 6163  .....j..s..abrac
+00000040: ae00 0000 006a f2a6 0200 0f61 6272 6163  .....j.....abrac
 00000050: 6164 6162 7261 2e74 7874 0000 0005 0000  adabra.txt......
 00000060: 0063 0000 0001 0000 0064 0000 0001 0000  .c.......d......
 00000070: 0062 0000 0002 0000 0072 0000 0002 0000  .b.......r......
@@ -82,7 +82,7 @@ Frecuencias `a:5 b:2 r:2 c:1 d:1` → códigos `a=0 c=100 d=101 b=110 r=111`.
 
 | Offset | Bytes | Campo | Valor |
 |---:|---|---|---|
-| 0 | `48 41 44 41` | MAGIC | `HADA` |
+| 0 | `53 59 50 48` | MAGIC | `SYPH` |
 | 4 | `01` | VERSION | 1 |
 | 5 | `00` | CODIF | UTF-8 |
 | 6 | `00 00` | RESERVADO | 0 |
@@ -91,7 +91,7 @@ Frecuencias `a:5 b:2 r:2 c:1 d:1` → códigos `a=0 c=100 d=101 b=110 r=111`.
 | 24 | `00…17` | BITS | 23 |
 | 32 | `01` | RELLENO | 1 |
 | 33 | `5b ab … ae` | SHA256 | `045babdc…49e942ae` |
-| 65 | `00…6a f2 a0 73` | FECHA | 2026-11-09 22:41:23 |
+| 65 | `00…6a f2 a6 02` | FECHA | 2026-11-09 23:05:06 |
 | 73 | `00 0f` | LEN_NOMBRE | 15 |
 | 75 | `61 62 … 74` | NOMBRE | `abracadabra.txt` |
 | 90 | `00 00 00 05` | SIMBOLOS | 5 |
@@ -101,13 +101,13 @@ Frecuencias `a:5 b:2 r:2 c:1 d:1` → códigos `a=0 c=100 d=101 b=110 r=111`.
 Los 23 bits válidos se leen `0 110 111 0 100 0 101 0 110 111 0` =
 `a b r a c a d a b r a`. El último `0` (en negritas) es relleno.
 
-En un texto tan corto el `.hada` (137 B) es más grande que el original (11 B):
+En un texto tan corto el `.sypher` (137 B) es más grande que el original (11 B):
 la cabecera y la tabla cuestan más de lo que se ahorra. En un libro, la cabecera es
 menos del 0.1 % del archivo.
 
 ## Lectura en código
 
-`formato.leer(bytes)` devuelve un `ArchivoHada` con todos los campos, la lista de
+`formato.leer(bytes)` devuelve un `ArchivoSypher` con todos los campos, la lista de
 secciones con su offset y tamaño (la que muestra el inspector), el árbol
-reconstruido y los códigos. `formato.descomprimir(hada)` recorre el árbol bit
+reconstruido y los códigos. `formato.descomprimir(sypher)` recorre el árbol bit
 por bit y devuelve el contenido, su SHA-256 y si coincide con la cabecera.

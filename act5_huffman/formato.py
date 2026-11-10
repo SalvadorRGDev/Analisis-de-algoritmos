@@ -1,9 +1,9 @@
-"""Formato propio .hada (Huffman · Análisis De Algoritmos).
+"""Formato propio .sypher.
 
 Todos los enteros van en big-endian. La estructura completa está documentada
 en docs/FORMATO.md.
 
-    MAGIC       4 B   b"HADA"
+    MAGIC       4 B   b"SYPH"
     VERSION     1 B   1
     CODIF       1 B   0 = UTF-8, 1 = Latin-1
     RESERVADO   2 B   0
@@ -27,8 +27,8 @@ from dataclasses import dataclass, field
 
 import huffman
 
-EXTENSION = ".hada"
-MAGIC = b"HADA"
+EXTENSION = ".sypher"
+MAGIC = b"SYPH"
 VERSION = 1
 CODIFICACIONES = {0: "utf-8", 1: "latin-1"}
 
@@ -45,8 +45,8 @@ class Seccion:
 
 
 @dataclass
-class ArchivoHada:
-    """Todo lo que se puede saber de un .hada sin tener el .txt original."""
+class ArchivoSypher:
+    """Todo lo que se puede saber de un .sypher sin tener el .txt original."""
     version: int
     codificacion: str
     tamano_original: int
@@ -83,11 +83,11 @@ class Analisis:
 
 @dataclass
 class Resultado:
-    """Pasos 4 y 5: el texto codificado y el archivo .hada generado."""
+    """Pasos 4 y 5: el texto codificado y el archivo .sypher generado."""
     analisis: Analisis
     original: bytes
     archivo: bytes
-    hada: ArchivoHada
+    sypher: ArchivoSypher
     tiempos: dict
 
 
@@ -137,7 +137,7 @@ def analizar(original):
 
 
 def comprimir(original, nombre="texto.txt", analisis=None, fecha=None):
-    """original.txt (bytes) -> Resultado con el archivo .hada listo para guardar."""
+    """original.txt (bytes) -> Resultado con el archivo .sypher listo para guardar."""
     analisis = analisis or analizar(original)
     tiempos = dict(analisis.tiempos)
     inicio = time.perf_counter()
@@ -150,9 +150,9 @@ def comprimir(original, nombre="texto.txt", analisis=None, fecha=None):
 
 
 def leer(archivo):
-    """Lee e interpreta un .hada y reconstruye el árbol a partir de la tabla."""
+    """Lee e interpreta un .sypher y reconstruye el árbol a partir de la tabla."""
     if len(archivo) < _CABECERA_FIJA.size or archivo[:4] != MAGIC:
-        raise ValueError("No es un archivo .hada (firma 'HADA' no encontrada)")
+        raise ValueError("No es un archivo .sypher (firma 'SYPH' no encontrada)")
     (magic, version, codificacion, _reservado, tamano_original, caracteres,
      bits_validos, relleno, sha256, fecha, len_nombre) = _CABECERA_FIJA.unpack_from(archivo)
     if version != VERSION:
@@ -206,7 +206,7 @@ def leer(archivo):
         raise ValueError("La tabla de frecuencias no suma el número de caracteres")
 
     raiz, pasos = huffman.construir_arbol(frecuencias)
-    return ArchivoHada(
+    return ArchivoSypher(
         version=version,
         codificacion=CODIFICACIONES[codificacion],
         tamano_original=tamano_original,
@@ -235,14 +235,14 @@ class Descompresion:
     segundos: float
 
 
-def descomprimir(hada):
-    """Reconstruye el .txt original solo con la información del .hada."""
+def descomprimir(sypher):
+    """Reconstruye el .txt original solo con la información del .sypher."""
     inicio = time.perf_counter()
-    texto = huffman.decodificar(hada.datos, hada.bits_validos, hada.raiz)
-    contenido = texto.encode(hada.codificacion)
+    texto = huffman.decodificar(sypher.datos, sypher.bits_validos, sypher.raiz)
+    contenido = texto.encode(sypher.codificacion)
     segundos = time.perf_counter() - inicio
     digest = hashlib.sha256(contenido).digest()
-    integro = digest == hada.sha256 and len(contenido) == hada.tamano_original
+    integro = digest == sypher.sha256 and len(contenido) == sypher.tamano_original
     return Descompresion(contenido, texto, digest.hex(), integro, segundos)
 
 

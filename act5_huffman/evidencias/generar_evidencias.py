@@ -1,4 +1,4 @@
-"""Corre el flujo completo original.txt -> .hada -> recuperado.txt sobre varios
+"""Corre el flujo completo original.txt -> .sypher -> recuperado.txt sobre varios
 textos y escribe evidencias/resultados.md.
 
 Uso:
@@ -33,7 +33,7 @@ def medir(etiqueta, tipo, contenido, nombre):
     inicio = time.perf_counter()
     resultado = formato.comprimir(contenido, nombre)
     t_comprimir = time.perf_counter() - inicio
-    leido = formato.leer(resultado.archivo)       # solo el .hada, sin el .txt
+    leido = formato.leer(resultado.archivo)       # solo el .sypher, sin el .txt
     recuperado = formato.descomprimir(leido)
     diferencia = formato.comparar_bytes(contenido, recuperado.contenido)
     a = resultado.analisis
@@ -71,7 +71,7 @@ def main():
         casos.append(medir("4 · Archivo nuevo", "no usado durante el desarrollo", contenido, nombre))
 
     pequeno = casos[0]
-    (CARPETA / "abracadabra.hada").write_bytes(pequeno["archivo"])
+    (CARPETA / "abracadabra.sypher").write_bytes(pequeno["archivo"])
 
     lineas = [
         "# Resultados de compresión e integridad",
@@ -79,10 +79,10 @@ def main():
         f"Generado con `evidencias/generar_evidencias.py` el {time.strftime('%Y-%m-%d %H:%M')} "
         f"(Python {platform.python_version()}, {platform.system()}).",
         "",
-        "Cada caso sigue el flujo `original.txt → .hada → recuperado.txt`. El `.hada` se vuelve a leer "
+        "Cada caso sigue el flujo `original.txt → .sypher → recuperado.txt`. El `.sypher` se vuelve a leer "
         "desde sus bytes, sin el `.txt`, antes de descomprimir.",
         "",
-        "| Caso | Archivo | Original | .hada | Ahorro | Reducción | Razón | Símbolos | Bits/símbolo | Entropía | Comprimir | Descomprimir |",
+        "| Caso | Archivo | Original | .sypher | Ahorro | Reducción | Razón | Símbolos | Bits/símbolo | Entropía | Comprimir | Descomprimir |",
         "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for c in casos:
@@ -113,8 +113,8 @@ def main():
     lineas += [
         "", f"Bits: `{' '.join(a.codigos[c] for c in a.texto)}` = {pequeno['bits']} bits "
         f"→ `{bits}` + 1 bit de relleno = 3 bytes de datos.",
-        f"El `.hada` completo mide {pequeno['comprimido']} bytes porque la cabecera y la tabla pesan más que el "
-        "texto: en textos muy cortos el archivo crece. Ver `abracadabra.hada`.",
+        f"El `.sypher` completo mide {pequeno['comprimido']} bytes porque la cabecera y la tabla pesan más que el "
+        "texto: en textos muy cortos el archivo crece. Ver `abracadabra.sypher`.",
     ]
     (CARPETA / "resultados.md").write_text("\n".join(lineas) + "\n", encoding="utf-8")
     print("\n".join(lineas))

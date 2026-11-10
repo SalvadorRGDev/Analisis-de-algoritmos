@@ -1,4 +1,4 @@
-"""Pruebas del algoritmo, del formato .hada y del árbol de expansión mínima.
+"""Pruebas del algoritmo, del formato .sypher y del árbol de expansión mínima.
 
 Ejecutar desde la carpeta del proyecto:  python3 -m unittest -v
 """
@@ -20,7 +20,7 @@ import huffman  # noqa: E402
 
 def ida_y_vuelta(contenido, nombre="prueba.txt"):
     resultado = formato.comprimir(contenido, nombre)
-    leido = formato.leer(resultado.archivo)          # solo con el .hada
+    leido = formato.leer(resultado.archivo)          # solo con el .sypher
     recuperado = formato.descomprimir(leido)
     return resultado, leido, recuperado
 
@@ -132,14 +132,14 @@ class CasosLimite(unittest.TestCase):
         self.comprobar("﻿Texto con BOM".encode("utf-8"))
 
 
-class FormatoHada(unittest.TestCase):
+class FormatoSypher(unittest.TestCase):
     def setUp(self):
         self.contenido = "En un lugar de la Mancha, de cuyo nombre no quiero acordarme".encode("utf-8")
         self.resultado = formato.comprimir(self.contenido, "mancha.txt", fecha=1_700_000_000)
         self.archivo = self.resultado.archivo
 
     def test_cabecera(self):
-        self.assertEqual(self.archivo[:4], b"HADA")
+        self.assertEqual(self.archivo[:4], b"SYPH")
         self.assertEqual(self.archivo[4], formato.VERSION)
         leido = formato.leer(self.archivo)
         self.assertEqual(leido.tamano_original, len(self.contenido))

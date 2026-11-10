@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
 
-AGENTE = {"User-Agent": "HADA-Huffman/1.0 (actividad escolar de Analisis de Algoritmos)"}
+AGENTE = {"User-Agent": "Sypher-Huffman/1.0 (actividad escolar de Analisis de Algoritmos)"}
 CARPETA_LIBROS = Path(__file__).parent / "libros"
 
 
