@@ -11,12 +11,11 @@ idéntico. Incluye una segunda parte con el **árbol de expansión mínima**
 BUSCAR LIBRO / SUBIR TXT → ANALIZAR → CONSTRUIR HUFFMAN → COMPRIMIR → INSPECCIONAR → DESCOMPRIMIR
 ```
 
-## Integrantes
+## Integrante
 
-| Nombre | Usuario |
-|---|---|
-| Salvador | [@SalvadorRGDev](https://github.com/SalvadorRGDev) |
-| _(compañero/a)_ | _(usuario)_ |
+Actividad individual: Salvador ([@SalvadorRGDev](https://github.com/SalvadorRGDev)).
+
+Reporte técnico: [docs/reporte_actividad5.pdf](docs/reporte_actividad5.pdf).
 
 ## Cómo ejecutar
 
@@ -128,6 +127,7 @@ act5_huffman/
 ├── gutenberg.py            búsqueda (OPDS de gutenberg.org, Gutendex de respaldo) y descarga
 ├── expansion_minima.py     Kruskal, Prim, Union-Find, generador de grafos
 ├── docs/FORMATO.md         especificación del formato .hada
+├── docs/reporte_actividad5.pdf  reporte técnico
 ├── tests/test_huffman.py   pruebas unitarias
 ├── evidencias/             resultados.md, abracadabra.hada, capturas/ y el script que los genera
 └── libros/                 copias de los libros descargados (ignorada por git)
@@ -146,7 +146,7 @@ act5_huffman/
 |---|---|---|
 | Claude Code (Claude Opus 5.5) | Apoyo para escribir el código, las pruebas, la documentación del formato y el README a partir de los requerimientos. | Pruebas unitarias (incluye comparación contra fuerza bruta para Huffman y MST), ida y vuelta con SHA-256 en tres libros, revisión manual de `abracadabra` bit por bit y revisión de las capturas de la interfaz. |
 
-El equipo revisó y puede explicar cada módulo. _(Agreguen aquí cualquier otra herramienta que hayan usado.)_
+Revisé cada módulo y puedo explicar su funcionamiento.
 
 ## Limitaciones conocidas
 
